@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../jQuery.min.js"></script>
+</head>
+<body>
+    <a href="www.egobg.com">Link</a>
+<script>
+        $(document).ready(function () {
+            $("a").click(function (event) {
+                alert("Link Forbidden!")
+                event.preventDefault();
+            })
+        })
+    </script>
+</body>
+</html>
