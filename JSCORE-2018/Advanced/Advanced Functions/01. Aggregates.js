@@ -8,7 +8,7 @@ function aggregate(arr) {
         return result;
     }
 
-    console.log('Sum = ' + reduce(arr, (a, b) => a + b));
+    console.log('05. Sum = ' + reduce(arr, (a, b) => a + b));
     console.log('Min = ' + reduce(arr, (a, b) => a > b ? b : a));
     console.log('Max = ' + reduce(arr, (a, b) => a > b ? a : b))
     console.log('Product = ' + reduce(arr, (a, b) => a * b));
