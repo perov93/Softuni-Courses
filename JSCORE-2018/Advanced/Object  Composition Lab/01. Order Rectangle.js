@@ -62,4 +62,6 @@ function orderRectangles(input) {
     return sortedRects;
 }
 
-orderRectangles([[3,4], [5,3], [3, 4], [3, 5], [12, 1]])
+let result = orderRectangles([[3,4], [5,3], [3, 4], [3, 5], [12, 1]])
+
+console.log(result);
