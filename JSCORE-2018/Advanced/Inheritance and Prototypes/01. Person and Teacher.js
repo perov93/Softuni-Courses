@@ -4,6 +4,11 @@ function personAndTeacher(){
             this.name = name;
             this.email = email;
         }
+
+        toString(){
+            let className = this.constructor.name;
+            return `${className} (name: ${this.name} email: ${this.email})`
+        }
     }
 
     class Teacher extends Person{
