@@ -1,4 +1,4 @@
-function inheritingAndReplToString() {
+function inheritingAndReplacingToString() {
     class Person {
         constructor(name, email) {
             this.name = name;
@@ -33,6 +33,11 @@ function inheritingAndReplToString() {
             let base = super.toString().slice(0, -1)
             return base + `, course: ${this.course}`
         }
+    }
+    return{
+        Person,
+        Teacher,
+        Student
     }
 }
 
