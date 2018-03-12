@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Titlebar</title>
+    <script src="../../jQuery.min.js"></script>
+    <style>
+        .header {
+            background-color: #5555ff;
+            color: white;
+            height: 60px;
+            position: relative;
+            left: 0;
+            top: 0;
+        }
+        .button {
+            cursor: pointer;
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin: 4px;
+            position: absolute;
+            text-align: center;
+            line-height: 50px;
+            font-size: 24px;
+        }
+        .title {
+            display: block;
+            position: absolute;
+            left: 80px;
+            font-size: 32px;
+            font-family: "Helvetica", sans-serif;
+            line-height: 60px;
+        }
+        .drawer {
+            left:0;
+            top:55px;
+            float:left;
+            position: absolute;
+            background-color: #eeeeff;
+            width: 180px;
+            display: block;
+        }
+        .menu-link {
+            color: black;
+            font-family: "Helvetica", sans-serif;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            padding: 4px;
+            padding-left: 12px;
+        }
+        .menu-link:hover {
+            color: white;
+            background-color: #5555ff;
+        }
+        .post {
+            margin: 48px;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+
+
+</div>
+<script>
+    $(document).ready(function () {
+
+        let header = new TitleBar('Title Bar Problem');
+        header.addLink('/', 'Home');
+        header.addLink('about', 'About');
+        header.addLink('results', 'Results');
+        header.addLink('faq', 'FAQ');
+        header.appendTo('#container');
+    })
+</script>
+<script>
+    class TitleBar{
+        constructor(title){
+            this.title = title;
+            this.links = [];
+        }
+
+        addLink(href, name){
+            let link = $('<a>')
+                .addClass('menu-link')
+                .attr('href', href)
+                .text(name)
+            this.links.push(link)
+
+        }
+
+        appendTo(selector){
+            //Creating Elements
+            let header = $('<header>').addClass('header')
+            let headerRow = $('<div>').addClass('header-row')
+            let button = $('<a>')
+                .addClass('button')
+                .html('&#9776;')
+                .click(() => $('div.drawer').toggle())
+            let span = $('<span>')
+                .addClass('title')
+                .text(this.title)
+            let drawer = $('<div>').addClass('drawer')
+            let navMenu = $('<nav>').addClass('menu')
+
+            //Appending Elements
+            this.links.forEach(link => navMenu.append(link))
+            headerRow.append(button);
+            headerRow.append(span);
+            drawer.append(navMenu);
+            header.append(headerRow);
+            header.append(drawer)
+
+            $(selector).append(header)
+        }
+    }
+</script>
+</body>
+</html>
