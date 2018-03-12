@@ -19,7 +19,7 @@
     }
     function createBook(selector, title, author, ISBN) {
         let bookGenerator = (function (){
-            let id =1;
+            let id = 1;
             return function (selector, title, author, ISBN) {
                 let container = $(selector);
                 let bookContainer = $('<div>');
@@ -45,6 +45,8 @@
             }
         }());
         bookGenerator(selector, title, author, ISBN)
+        bookGenerator(selector, title, author, ISBN)
+
     }
 </script>
 </body>
