@@ -1,9 +1,9 @@
-let list = require('../list-add-delete');
+let list = require('../02. List-add-delete');
 let expect = require('chai').expect;
 
-describe('Add/Delete', function() {
+describe('Add/Delete', function () {
 
-    it("Test empty list", function() {
+    it("Test empty list", function () {
         expect(list.toString()).to.equal('');
     });
 
@@ -11,7 +11,7 @@ describe('Add/Delete', function() {
         list.add(10);
         expect(list.toString()).to.equal('10');
     });
-    it('Should work with multiple adding invocations',function () {
+    it('Should work with multiple adding invocations', function () {
         list.add(10);
         list.add(20);
         list.add(30);

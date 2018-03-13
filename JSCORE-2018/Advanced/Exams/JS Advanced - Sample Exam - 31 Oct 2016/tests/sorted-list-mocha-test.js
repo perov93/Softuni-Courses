@@ -1,4 +1,4 @@
-const SortedList = require('../02. Sorted List').SortedList;
+const SortedList = require('../02. Sorted List');
 const expect = require('chai').expect;
 
 describe('Sorted List', function() {
