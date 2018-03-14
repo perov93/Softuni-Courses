@@ -1,6 +1,6 @@
 // Sample JS Advanced Exam - 7-Nov-2016
 
-let list = (function(){
+function list(){
     let data = [];
     return {
         add: function(item) {
@@ -17,6 +17,6 @@ let list = (function(){
             return data.join(", ");
         }
     };
-})();
+};
 
 module.exports = list;

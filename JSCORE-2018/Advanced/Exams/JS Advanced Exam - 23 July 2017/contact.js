@@ -69,7 +69,10 @@ let contacts = [
 contacts.forEach(c => c.render('main'));
 // After 1 second, change the online status to true
 setTimeout(() => contacts[1].online = true, 2000);
-setTimeout(() => contacts[0].offline = true, 4000);
+setTimeout(() => contacts[0].offline = true, 3000);
+setTimeout(function () {contacts[0].online = 2000}, 500)
+
+
 
 /**
  * Created by dzgn on 3/13/2018.
