@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Cards</title>
+    <style>
+        div.card {
+            display: inline-block;
+            padding: 10px;
+            margin: 10px;
+            width: 50px;
+            height: 80px;
+            background: #EEE;
+            border: 3px solid #DDD;
+            border-radius: 5px;
+            font-size: 18pt;
+            text-align: center;
+            line-height: 75px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 </head>
 <body>
+<div id="main"></div>
+<script>
+    function cardDeckBuilder(selector) {
+        // TODO: return the card builder
+        function reverse() {
+            let elements = $('.card');
+            $(selector).append(elements.get().reverse())
+        }
+        return {  // This function is "closure"
+            addCard: function (face, suit) {
+                let suits = {
+                    C: '\u2663',
+                    D: '\u2666',
+                    H: '\u2665',
+                    S: '\u2660'
+                }
+                let card = $(`<div class="card">${face} ${suits[suit]}</div>`)
+                    .click(reverse)
+                    .appendTo(selector)
+                //$('#main').append(card)
+            },
 
+        };
+    }
+</script>
+<script>
+    $(function () {
+        let builder = cardDeckBuilder("#main");
+        builder.addCard("10", "D");
+        builder.addCard("J", "D");
+        builder.addCard("Q", "H");
+        builder.addCard("K", "S");
+        builder.addCard("A", "C");
+    });
+</script>
 </body>
-</html>
+</html>	 

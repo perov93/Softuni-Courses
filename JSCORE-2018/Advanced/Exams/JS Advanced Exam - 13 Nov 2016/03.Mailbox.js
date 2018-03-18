@@ -1,52 +1,38 @@
 class MailBox {
     constructor() {
-        this.messages = []
-    }
-
-    addMessage(subject, text) {
-        let message = {
-            subject: subject,
-            text: text
-        }
-        this.messages.push(message);
-
-        return this;
+        this._messages = []; // _Private property; Съхраняване на messages
     }
 
     get messageCount() {
-        return this.messages.length
+        return this._messages.length; //Accessor property;
     }
 
-    deleteAllMessages(){
-        this.messages = []
+    addMessage(subject, text) {
+        this._messages.push({subject, text});
+        return this;
     }
 
-    findBySubject(substr){
-        let matches = [];
-        for (let message of this.messages) {
-            let currentMessageText = message.subject;
-            if(currentMessageText.indexOf(substr) !== -1){
-                let subject = message.subject;
-                let text = message.text;
-
-                matches.push({subject, text});
-            }
-        }
-        return matches;
+    deleteAllMessages() {
+        this._messages.length = 0;
     }
 
-    toString(){
-        if(this.messages.length === 0){
-            return ' * (empty mailbox)';
-        }
-        if(this.messages.length !== 0){
-            let base = '';
-            for (let message of this.messages) {
-                base += ` * [${message['subject']}] ${message['text']}\n`;
-            }
+    findBySubject(substr) {
+        return this._messages.filter(m => m.subject.includes(substr));
+    }
 
-            return ' ' + base.trim();
-        }
+    toString() {
+        // if (this._messages.length === 0) {
+        //     return `* (empty mailbox)`
+        // }
+        // let output = ''
+        // for (let msg of this._messages) {
+        //     output += `* [${msg.subject}] ${msg.text}\n`
+        // }
+        // return output;
+
+        return this._messages.length === 0 ? `* (empty mailbox)` : this._messages
+            .map(e => `* [${e.subject}] ${e.text}`)
+            .join('\n')
     }
 }
 
