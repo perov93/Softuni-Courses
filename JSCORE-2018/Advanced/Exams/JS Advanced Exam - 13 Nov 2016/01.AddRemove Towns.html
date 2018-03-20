@@ -33,7 +33,6 @@
             $('#towns').find(":selected").remove()
         });
         $('#btnAdd').on('click', function () {
-
             let inputText = $('#newItem').val()
             if(inputText.length === 0)return; // Проверка за празен input
             $('#towns').append(`<option>${inputText}</option>`)
