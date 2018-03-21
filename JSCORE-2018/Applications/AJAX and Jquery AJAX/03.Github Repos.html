@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>GitHub Repos</title>
+    <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+</head>
+<body>
+GitHub username:
+<input type='text' id='username' value='k1r1L'/>
+<button onclick='loadRepos()'>Load Repos</button>
+<ul id='repos'>
+    <li>
+        <a href='{repo.html_url}'>
+            {repo.full_name}
+        </a>
+    </li>
+</ul>
+<script>
+//    function loadRepos() {
+//        $('#repos').empty();
+//        let url = "https://api.github.com/users/" + $("#username").val() + "/repos";
+//        return $.ajax({
+//            url: url,
+//            success: displayRepos,
+//            error: displayError
+//
+//        });
+//
+//        function displayRepos(repos) {
+//            for(let repo of repos){
+//                let link = $('<a>').text(repo.full_name).attr('href', repo.html_url);
+//                $('#repos').append($('<li>').append(link));
+//            }
+//        }
+//
+//        function displayError(err) {
+//            $('#repos').append($('<li>Error</li>'));
+//        }
+//    }
+function loadRepos() {
+    let output = $('#repos');
+    output.empty();
+    $(`<div class="loading"><b>Loading...</b></div>`).appendTo(output);
+    $('#btnLoad').prop('disabled', true);
+    let url = `https://api.github.com/users/${$('#username').val()}/repos`;
+
+    let request = {
+        url,
+        success: displayRepos,
+        error: displayError,
+        complete: () =>  $('#btnLoad').prop('disabled', false)
+    };
+
+    $.ajax(request);
+
+    function displayError(err) {
+        output.empty();
+        let error = $(`<div class="error"><b>Error: User not found</b></div>`);
+        output.append(error);
+
+    }
+
+    function displayRepos(repos) {
+        output.empty();
+        $(`<div class="success"><b>Successfully found user repos</b></div>`).appendTo(output);
+        for (let repo of repos) {
+            output.append($(`<li><a href="${repo.html_url}" target="_blank">${repo.full_name}</a></li>`));
+        }
+
+    }
+
+}
+</script>
+</body>
+</html>	 
