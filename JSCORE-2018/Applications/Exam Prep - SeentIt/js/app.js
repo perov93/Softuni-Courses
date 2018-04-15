@@ -93,6 +93,167 @@ $(() => {
             }).then(function () {
                 this.partial('./templates/posts/createPostPage.hbs')
             })
+
+        });
+
+        this.post('#/create/post', function (ctx) {
+
+            if(!auth.isAuth()){
+                ctx.redirect('#/home');
+                return;
+            }
+
+            let author = sessionStorage.getItem('username');
+            let url = ctx.params.url;
+            let title = ctx.params.title;
+            let imageUrl = ctx.params.imageUrl;
+            let description = ctx.params.description;
+
+            if(title===''){
+                notify.showError('Title is required!');
+            }else if(url ===''){
+                notify.showError('Url is required!');
+            }else if(!url.startsWith('http')){
+                notify.showError('URL must be a valid link');
+            }else{
+                posts.createPost(author,title,description,url,imageUrl)
+                    .then(function () {
+                        notify.showInfo('Post created.')
+                        ctx.redirect('#/catalog');
+                    }).catch(notify.handleError)
+            }
+        });
+
+        this.get('#/posts', function (ctx) {
+            if(!auth.isAuth()){
+                ctx.redirect('#/home');
+                return
+            }
+
+            ctx.loadPartials({
+                header: './templates/common/header.hbs',
+                footer: './templates/common/footer.hbs',
+                navigation: './templates/common/navigation.hbs'
+            }).then(function () {
+                this.partial('./templates/posts/myPosts.hbs')
+            })
+
+        });
+
+        this.get('#/edit/post/:postId', (ctx) => {
+            if (!auth.isAuth()) {
+                ctx.redirect('#/home');
+                return;
+            }
+
+            let postId = ctx.params.postId;
+
+            posts.getPostById(postId)
+                .then((post) => {
+                    ctx.isAuth = auth.isAuth();
+                    ctx.username = sessionStorage.getItem('username');
+                    ctx.post = post;
+
+                    ctx.loadPartials({
+                        header: './templates/common/header.hbs',
+                        footer: './templates/common/footer.hbs',
+                        navigation: './templates/common/navigation.hbs',
+                    }).then(function () {
+                        this.partial('./templates/posts/editPost.hbs');
+                    })
+                })
+        });
+
+        this.post('#/edit/post', (ctx) => {
+            let postId = ctx.params.postId;
+            let author = sessionStorage.getItem('username');
+            let url = ctx.params.url;
+            let imageUrl = ctx.params.imageUrl;
+            let title = ctx.params.title;
+            let description = ctx.params.description;
+
+            if (postIsValid(title, url)) {
+                posts.editPost(postId, author, title, description, url, imageUrl)
+                    .then(() => {
+                        notify.showInfo(`Post ${title} updated.`);
+                        ctx.redirect('#/catalog');
+                    })
+                    .catch(notify.showError);
+            }
+        });
+
+        this.get('#/delete/post/:postId', function (ctx) {
+            if(!auth.isAuth()){
+                ctx.redirect('#/home');
+                return;
+            }
+            let postId = ctx.params.postId;
+
+            posts.deletePost(postId).then(function () {
+                notify.showInfo('Post deleted');
+                ctx.redirect('#/catalog');
+            }).catch(notify.handleError)
+        });
+
+        this.get('#/details/:postId', function (ctx) {
+            let postId = ctx.params.postId;
+
+            const postPromise = posts.getPostById(postId);
+            const allCommentsPromise = comments.getPostComments(postId);
+
+            Promise.all([postPromise, allCommentsPromise])
+                .then(function ([post, comments]) {
+                    post.date = calcTime(post._kmd.ect);
+                    post.isAuthor = post._acl.creator === sessionStorage.getItem('userId');
+                    comments.forEach((c) => {
+                        c.date = calcTime(c._kmd.ect);
+                        c.commentAuthor = c._acl.creator === sessionStorage.getItem('userId');
+
+                    });
+
+                    ctx.isAuth = auth.isAuth();
+                    ctx.username = sessionStorage.getItem('username');
+                    ctx.post = post;
+                    ctx.comments = comments;
+
+                    ctx.loadPartials({
+                        header: './templates/common/header.hbs',
+                        footer: './templates/common/footer.hbs',
+                        navigation: './templates/common/navigation.hbs',
+                        postDetails: './templates/details/postDetails.hbs',
+                        comment: './templates/details/comment.hbs'
+                    }).then(function () {
+                        this.partial('./templates/details/postDetailsPage.hbs')
+                    })
+                })
+        });
+
+        this.post('#/create/comment', function (ctx) {
+            let author = sessionStorage.getItem('username');
+            let content = ctx.params.content;
+            let postId = ctx.params.postId;
+
+            if(content === ''){
+                notify.showError('Cannot add empty comment');
+                return;
+            }
+            comments.createComment(postId, content, author)
+                .then(function () {
+                    notify.showInfo('comment created!');
+                    ctx.redirect(`#/details/${postId}`);
+                }).catch(notify.handleError)
+        });
+
+        this.get('#/comment/delete/:commentId/post/:postId', (ctx) => {
+            let commentId = ctx.params.commentId;
+            let postId = ctx.params.postId;
+
+            comments.deleteComment(commentId)
+                .then(() => {
+                    notify.showInfo('Comment deleted.');
+                    ctx.redirect(`#/details/${postId}`);
+                })
+                .catch(notify.handleError);
         });
 
         function getWelcomePage(ctx) {
@@ -109,6 +270,20 @@ $(() => {
             } else {
                 ctx.redirect('#/catalog')
             }
+        };
+
+        function postIsValid(title, url) {
+            if(title===""){
+                notify.showError('Title is required');
+            }else if(url ===""){
+                notify.showError('Url is required');
+            }else if(!url.startsWith('https:')){
+                notify.showError('URL must be a valid link!');
+            }else{
+                return true;
+            }
+
+            return false;
         }
 
         function calcTime(dateIsoFormat) {
@@ -129,8 +304,9 @@ $(() => {
                 if (value !== 1) return 's';
                 else return '';
             }
-        }
+        };
+
     });
 
     app.run()
-})
+});
